@@ -44,32 +44,54 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import * as Icons from '@element-plus/icons-vue'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import axios from 'axios'
 
-const { ElIcon } = Icons
 const router = useRouter()
+const route = useRoute()
+
+// 返回按钮
 const goBack = () => router.back()
 
+// 折叠面板状态
 const activeNames = ref(['trigger', 'notify', 'silence'])
 
-// 告警詳情數據（預留接口）
+// 告警详情数据（初始为空）
 const alarm = ref({
-  name: 'test113454',
-  type: '设备告警',
-  status: '禁用',
-  level: '紧急',
-  time: '2025-03-04 08:26:51',
-  desc: '222',
-  triggers: [
-    '设备数据触发: 产品: mk | 设备: testmk | 功能: 湿度 | 触发条件: 最大值(15分钟周期)=45'
-  ],
-  notifies: ['告警中心'],
-  silence: '0分钟'
+  name: '',
+  type: '',
+  status: '',
+  level: '',
+  time: '',
+  desc: '',
+  triggers: [],
+  notifies: [],
+  silence: ''
 })
-</script>
 
+// 获取当前路由中的 id
+const alarmId = ref(route.params.id || '') // 使用ref包装alarmId
+
+onMounted(() => {
+  if (!alarmId.value) {
+    alert('缺少告警 ID')
+    return
+  }
+  fetchAlarmDetail()
+})
+
+const fetchAlarmDetail = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8888/api/alarmDetail`, {
+      params: { id: alarmId.value } // 直接使用alarmId.value
+    })
+    alarm.value = response.data // 确保后端返回的数据结构与alarm匹配
+  } catch (error) {
+    console.error('Failed to fetch alarm detail:', error)
+  }
+}
+</script>
 <style lang="scss" scoped>
 .alarm-detail-view {
   min-height: 100vh;
@@ -143,4 +165,4 @@ const alarm = ref({
     }
   }
 }
-</style> 
+</style>

@@ -17,7 +17,7 @@
     <el-input v-model="search" placeholder="请输入搜索" class="search-bar" clearable prefix-icon="el-icon-search" />
 
     <!-- 告警卡片列表 -->
-    <div class="alarm-list">
+    <div class="alarm-list" @click="gotoDetail(alarm.id)">
       <AlarmCardComponent
         v-for="alarm in filteredAlarms"
         :key="alarm.id"
@@ -38,21 +38,25 @@ import { useRouter } from 'vue-router'
 import AlarmCardComponent from '@/components/AlarmCardComponent.vue'
 import BottomNavComponent from '@/components/BottomNavComponent.vue'
 import * as Icons from '@element-plus/icons-vue'
-
-const { ElIcon,EpHome, EpCpu, EpBell, EpSunny, EpUser } = Icons
+// eslint-disable-next-line no-undef
+defineProps({
+  alarm: Object
+});
+const gotoDetail = (id) => {
+  router.push({ name: 'AlarmDetailView', params: { id: id }})
+}
 const router = useRouter()
-
-// 标签切换
 const tab = ref('all')
 const search = ref('')
+const alarms = ref([]) // 初始化为空数组
 
-// 底部導航
+// 底部导航
 const navs = ref([
-  { name: 'home', text: '首页', icon: EpHome, active: false },
-  { name: 'device', text: '设备', icon: EpCpu, active: false },
-  { name: 'alarm', text: '告警', icon: EpBell, active: true },
-  { name: 'scene', text: '场景', icon: EpSunny, active: false },
-  { name: 'mine', text: '我的', icon: EpUser, active: false }
+  { name: 'home', text: '首页', icon: Icons.EpHome, active: false },
+  { name: 'device', text: '设备', icon: Icons.EpCpu, active: false },
+  { name: 'alarm', text: '告警', icon: Icons.EpBell, active: true },
+  { name: 'scene', text: '场景', icon: Icons.EpSunny, active: false },
+  { name: 'mine', text: '我的', icon: Icons.EpUser, active: false }
 ])
 
 const onNavClick = (item) => {
@@ -64,21 +68,25 @@ const onNavClick = (item) => {
   if (item.name === 'mine') router.push('/mine')
 }
 
-// 告警规则列表（预留接口）
-const alarms = ref([
-  { id: 1, title: '平均温度大于50度', enabled: false, type: '设备告警', level: '重要', desc: '-', time: '2025年01月16日 08:38:14' },
-  { id: 2, title: '电压表电流告警', enabled: false, type: '设备告警', level: '紧急', desc: '-', time: '2025年01月15日 08:41:17' },
-  { id: 3, title: '告警测试', enabled: false, type: '设备告警', level: '紧急', desc: 'uuuu', time: '2024年12月11日 20:26:38' },
-  { id: 4, title: '测试错误时', enabled: true, type: '设备告警', level: '重要', desc: '-', time: '2024年12月11日 20:26:38' }
-])
+// 定义获取告警数据的方法
+async function fetchAlarms() {
+  try {
+    const response = await fetch('http://localhost:8888/api/alarmList');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    alarms.value = data.list; // 假设后端返回的数据结构如上所述
+  } catch (error) {
+    console.error('Failed to fetch alarms:', error);
+  }
+}
 
-// 过滤告警
-const filteredAlarms = computed(() => {
-  let list = alarms.value
-  if (tab.value === 'enabled') list = list.filter(a => a.enabled)
-  if (tab.value === 'disabled') list = list.filter(a => !a.enabled)
-  if (search.value) list = list.filter(a => a.title.includes(search.value))
-  return list
+// 合并所有的初始化操作到一个onMounted钩子中
+onMounted(() => {
+  window.scrollTo(0, 0)
+  navs.value.forEach(n => n.active = n.name === 'alarm')
+  fetchAlarms(); // 在组件挂载时调用fetchAlarms方法
 })
 
 const onToggle = (alarm, val) => {
@@ -90,12 +98,15 @@ const onAlarmClick = (alarm) => {
   router.push(`/alarm/${alarm.id}`)
 }
 
-onMounted(() => {
-  window.scrollTo(0, 0)
-  navs.value.forEach(n => n.active = n.name === 'alarm')
+// 过滤告警规则
+const filteredAlarms = computed(() => {
+  let list = alarms.value
+  if (tab.value === 'enabled') list = list.filter(a => a.enabled)
+  if (tab.value === 'disabled') list = list.filter(a => !a.enabled)
+  if (search.value) list = list.filter(a => a.title.includes(search.value))
+  return list
 })
 </script>
-
 <style lang="scss" scoped>
 .alarm-list-view {
   min-height: 100vh;
