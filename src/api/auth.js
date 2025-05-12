@@ -2,10 +2,9 @@ import request from '@/utils/request'
 
 export async function login(data) {
   try {
-    const res = await request.post('/api/login', data)
+    const res = await request.post('/login', data)
     return res
   } catch (e) {
-    // 本地測試賬號
     if (data.username === 'admin' && data.password === '123456') {
       return { token: 'test-token' }
     } else {
@@ -15,10 +14,9 @@ export async function login(data) {
 }
 export async function register(data) {
   try {
-    const res = await request.post('/api/register', data)
+    const res = await request.post('/register', data)
     return res
   } catch (e) {
-    // 本地測試註冊，僅允許 admin/123456
     if (data.username === 'admin' && data.password === '123456') {
       return { success: true }
     } else {

@@ -57,7 +57,6 @@ const routes = [
     name: 'TermsView',
     component: () => import('../views/TermsView.vue')
   }
-  // 其他路由將根據原型圖添加
 ]
 
 const router = createRouter({

@@ -1,20 +1,18 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
-// 創建 axios 實例
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API || '/api',
+  baseURL: process.env.VUE_APP_BASE_API || 'http://localhost:8888/api',
   timeout: 15000
 })
 
-// 請求攔截器
 service.interceptors.request.use(
   config => {
-    // 從 localStorage 獲取 token
     const token = localStorage.getItem('iot_token')
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
+      console.log('当前请求头:', config.headers)
     return config
   },
   error => {
@@ -23,11 +21,9 @@ service.interceptors.request.use(
   }
 )
 
-// 響應攔截器
 service.interceptors.response.use(
   response => {
     const res = response.data
-    // 這裡可以根據後端返回的狀態碼進行處理
     if (res.code !== 200) {
       ElMessage({
         message: res.message || '错误',
