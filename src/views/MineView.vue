@@ -3,7 +3,7 @@
     <!-- 頂部欄 -->
     <div class="top-bar">
       <span class="title">我的</span>
-      <el-button circle size="small" class="setting-btn"><el-icon><i-ep-more /></el-icon></el-button>
+      <el-button circle size="small" class="setting-btn"><el-icon><i-ep-more style="width: 1em; height: 1em" /></el-icon></el-button>
     </div>
 
     <!-- 用戶信息卡片 -->
@@ -54,6 +54,7 @@
 
     <!-- 底部導航欄 -->
     <BottomNavComponent :navs="navs" @nav-click="onNavClick" />
+    <AIFloatingButton />
     <el-button type="danger" @click="onLogout" style="width:100%;margin-top:24px;">退出登录</el-button>
 
     <!-- 弹窗表单 -->
@@ -84,12 +85,11 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import BottomNavComponent from '@/components/BottomNavComponent.vue'
-import * as Icons from '@element-plus/icons-vue'
+import AIFloatingButton from '@/components/AIFloatingButton.vue'
 import { removeToken } from '@/utils/auth'
 import { getUserInfo, updateUserInfo, uploadAvatar } from '@/api/user' // 假设你有 uploadAvatar 接口
 import { ElMessage } from 'element-plus'
 
-const { ElIcon, EpHome, EpCpu, EpBell, EpSunny, EpUser } = Icons
 const router = useRouter()
 
 // 表单数据
@@ -117,17 +117,21 @@ const rules = {
   ],
   phone: [
     { required: true, message: '请输入电话号码', trigger: 'blur' },
-    { type: 'number', message: '必须为数字值', trigger: 'blur' }
+    {
+      pattern: /^1[3-9]\d{9}$/,
+      message: '请输入正确的中国大陆手机号格式',
+      trigger: 'blur'
+    }
   ]
 }
 
 // 底部导航
 const navs = ref([
-  { name: 'home', text: '首页', icon: EpHome, active: false },
-  { name: 'device', text: '设备', icon: EpCpu, active: false },
-  { name: 'alarm', text: '告警', icon: EpBell, active: false },
-  { name: 'scene', text: '场景', icon: EpSunny, active: false },
-  { name: 'mine', text: '我的', icon: EpUser, active: true }
+  { name: 'home', text: '首页', icon: 'i-ep-home', active: false },
+  { name: 'device', text: '设备', icon: 'i-ep-cpu', active: false },
+  { name: 'alarm', text: '告警', icon: 'i-ep-bell', active: false },
+  { name: 'scene', text: '场景', icon: 'i-ep-sunny', active: false },
+  { name: 'mine', text: '我的', icon: 'i-ep-user', active: true }
 ])
 
 const onNavClick = (item) => {

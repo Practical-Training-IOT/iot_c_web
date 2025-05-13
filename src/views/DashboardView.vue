@@ -37,7 +37,6 @@
       </StatCardComponent>
     </div>
 
-    <!-- 設備消息數折線圖 -->
     <div class="section">
       <div class="section-title">设备消息数</div>
       <div ref="lineChartRef" class="chart-box"></div>
@@ -64,12 +63,8 @@
 import { ref, onMounted, nextTick } from 'vue'
 import StatCardComponent from '@/components/StatCardComponent.vue'
 import BottomNavComponent from '@/components/BottomNavComponent.vue'
-import * as Icons from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 import { useRouter } from 'vue-router'
-
-// 註冊圖標
-const { ElIcon, EpCpu, EpBell, EpHome, EpSunny, EpUser } = Icons
 
 // 統計數據（預留接口）
 const stats = ref({
@@ -82,7 +77,6 @@ const stats = ref({
   driverStopped: 2
 })
 
-// 設備消息數據（預留接口）
 const lineChartRef = ref(null)
 const lineChartData = ref({
   x: ['01-10', '01-11', '01-12', '01-13', '01-14', '01-15'],
@@ -100,11 +94,12 @@ const pieChartRef = ref(null)
 
 // 底部導航
 const navs = ref([
-  { name: 'home', text: '首页', icon: EpHome, active: true },
-  { name: 'device', text: '设备', icon: EpCpu, active: false },
-  { name: 'alarm', text: '告警', icon: EpBell, active: false },
-  { name: 'scene', text: '场景', icon: EpSunny, active: false },
-  { name: 'mine', text: '我的', icon: EpUser, active: false }
+  { name: 'home', text: '首页', icon: 'i-ep-home', active: true },
+  { name: 'device', text: '设备', icon: 'i-ep-cpu', active: false },
+  { name: 'alarm', text: '告警', icon: 'i-ep-bell', active: false },
+  { name: 'scene', text: '场景', icon: 'i-ep-sunny', active: false },
+  { name: 'ai', text: 'AI', icon: 'i-ep-chat-dot-round', active: false },
+  { name: 'mine', text: '我的', icon: 'i-ep-user', active: false }
 ])
 const router = useRouter()
 const onNavClick = (item) => {
@@ -113,6 +108,7 @@ const onNavClick = (item) => {
   if (item.name === 'device') router.push('/device')
   if (item.name === 'alarm') router.push('/alarm')
   if (item.name === 'scene') router.push('/scene')
+  if (item.name === 'ai') router.push('/ai')
   if (item.name === 'mine') router.push('/mine')
 }
 

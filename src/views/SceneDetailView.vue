@@ -51,8 +51,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import * as Icons from '@element-plus/icons-vue'
+import {sceneDetail} from "@/api/scene";
+import {ElMessage} from "element-plus";
 
 const { ElIcon } = Icons
 const router = useRouter()
@@ -60,40 +62,32 @@ const goBack = () => router.back()
 
 const activeNames = ref(['trigger', 'action'])
 
+const route = useRoute()
+const sceneId = parseInt(route.params.id, 10)
+
 // 場景詳情數據（預留接口）
 const scene = ref({
-  name: 'sz场景联动测试',
-  status: '禁用',
-  time: '2025-05-07 17:45:24',
-  desc: 'sz场景联动测试',
-  triggers: [
-    {
-      mode: '设备触发',
-      event: '设备数据触发',
-      period: '',
-      product: '电表演示',
-      device: '电表2',
-      func: 'EP_2',
-      condition: '> 221'
-    }
-  ],
-  actions: [
-    {
-      type: '设备执行',
-      product: '电表演示',
-      device: '电表2',
-      attr: 'Pdmd',
-      value: '220'
-    },
-    {
-      type: '设备执行',
-      product: 'esp32-农业',
-      device: '嗯嗯',
-      attr: '764004',
-      value: '66'
-    }
-  ]
+  name: '',
+    status: '',
+    time: '',
+    desc: '',
+    triggers: [],
+    actions: []
 })
+
+const getTableData = async () => {
+  const res = await sceneDetail({id:sceneId})
+  if (res.code === 200) {
+    scene.value=res.data
+  } else if (res.code === 401) {
+    ElMessage.error('登录失效')
+  } else if (res.code === 400) {
+    ElMessage.error(res.data.message)
+  } else {
+    ElMessage.error('未知错误，请联系管理员')
+  }
+}
+getTableData()
 </script>
 
 <style lang="scss" scoped>

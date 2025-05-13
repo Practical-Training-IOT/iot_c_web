@@ -3,7 +3,6 @@ import { ElMessage } from 'element-plus'
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API || 'http://localhost:8888/api',
-  timeout: 15000
 })
 
 service.interceptors.request.use(

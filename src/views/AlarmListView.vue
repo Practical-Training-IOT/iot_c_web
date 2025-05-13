@@ -29,6 +29,7 @@
 
     <!-- 底部導航欄 -->
     <BottomNavComponent :navs="navs" @nav-click="onNavClick"/>
+    <AIFloatingButton />
   </div>
 </template>
 
@@ -37,7 +38,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AlarmCardComponent from '@/components/AlarmCardComponent.vue'
 import BottomNavComponent from '@/components/BottomNavComponent.vue'
-import * as Icons from '@element-plus/icons-vue'
+import AIFloatingButton from '@/components/AIFloatingButton.vue'
 // eslint-disable-next-line no-undef
 defineProps({
   alarm: Object
@@ -52,11 +53,11 @@ const alarms = ref([]) // 初始化为空数组
 
 // 底部导航
 const navs = ref([
-  { name: 'home', text: '首页', icon: Icons.EpHome, active: false },
-  { name: 'device', text: '设备', icon: Icons.EpCpu, active: false },
-  { name: 'alarm', text: '告警', icon: Icons.EpBell, active: true },
-  { name: 'scene', text: '场景', icon: Icons.EpSunny, active: false },
-  { name: 'mine', text: '我的', icon: Icons.EpUser, active: false }
+  { name: 'home', text: '首页', icon: 'i-ep-home', active: false },
+  { name: 'device', text: '设备', icon: 'i-ep-cpu', active: false },
+  { name: 'alarm', text: '告警', icon: 'i-ep-bell', active: true },
+  { name: 'scene', text: '场景', icon: 'i-ep-sunny', active: false },
+  { name: 'mine', text: '我的', icon: 'i-ep-user', active: false }
 ])
 
 const onNavClick = (item) => {

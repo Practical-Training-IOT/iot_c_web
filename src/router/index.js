@@ -38,6 +38,11 @@ const routes = [
     component: () => import('../views/SceneDetailView.vue')
   },
   {
+    path: '/ai',
+    name: 'AIView',
+    component: () => import('../views/AIView.vue')
+  },
+  {
     path: '/mine',
     name: 'MineView',
     component: () => import('../views/MineView.vue')
