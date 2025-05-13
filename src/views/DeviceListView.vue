@@ -40,6 +40,7 @@
 
     <!-- 底部導航欄 -->
     <BottomNavComponent :navs="navs" @nav-click="onNavClick"/>
+    <AIFloatingButton />
   </div>
 </template>
 
@@ -48,9 +49,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import BottomNavComponent from '@/components/BottomNavComponent.vue'
 import DeviceCardComponent from '@/components/DeviceCardComponent.vue'
-import * as Icons from '@element-plus/icons-vue'
+import AIFloatingButton from '@/components/AIFloatingButton.vue'
 
-const { ElIcon, EpHome, EpCpu, EpBell, EpSunny, EpUser } = Icons
 const router = useRouter()
 
 // 標籤切換
@@ -85,11 +85,11 @@ const filteredDevices = computed(() => {
 
 // 底部導航
 const navs = ref([
-  { name: 'home', text: '首页', icon: EpHome, active: false },
-  { name: 'device', text: '设备', icon: EpCpu, active: true },
-  { name: 'alarm', text: '告警', icon: EpBell, active: false },
-  { name: 'scene', text: '场景', icon: EpSunny, active: false },
-  { name: 'mine', text: '我的', icon: EpUser, active: false }
+  { name: 'home', text: '首页', icon: 'i-ep-home', active: false },
+  { name: 'device', text: '设备', icon: 'i-ep-cpu', active: true },
+  { name: 'alarm', text: '告警', icon: 'i-ep-bell', active: false },
+  { name: 'scene', text: '场景', icon: 'i-ep-sunny', active: false },
+  { name: 'mine', text: '我的', icon: 'i-ep-user', active: false }
 ])
 const onNavClick = (item) => {
   navs.value.forEach(n => n.active = n.name === item.name)

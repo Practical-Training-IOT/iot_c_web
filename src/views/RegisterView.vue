@@ -40,14 +40,22 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { register } from '@/api/auth'
 import registerImg from '@/assets/register.svg'
+import {ElMessage} from "element-plus";
 
 const router = useRouter()
 const form = ref({ username: '', password: '' })
 
 const onRegister = async () => {
   const res = await register(form.value)
-  if (res && res.success) {
+  if (res.code===200) {
+    ElMessage.success('注册成功')
     await router.push('/login')
+  }else if (res.code === 400) {
+    // 注册失败
+    ElMessage.error('注册失败，请检查用户名或密码')
+  } else {
+    // 其他错误情况
+    ElMessage.error('发生未知错误')
   }
 }
 const goLogin = () => router.push('/login')

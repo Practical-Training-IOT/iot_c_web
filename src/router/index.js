@@ -38,6 +38,11 @@ const routes = [
     component: () => import('../views/SceneDetailView.vue')
   },
   {
+    path: '/ai',
+    name: 'AIView',
+    component: () => import('../views/AIView.vue')
+  },
+  {
     path: '/mine',
     name: 'MineView',
     component: () => import('../views/MineView.vue')
@@ -57,7 +62,6 @@ const routes = [
     name: 'TermsView',
     component: () => import('../views/TermsView.vue')
   }
-  // 其他路由將根據原型圖添加
 ]
 
 const router = createRouter({

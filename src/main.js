@@ -9,10 +9,15 @@ import './styles/index.scss'
 
 const app = createApp(App)
 
-// 註冊所有圖標
+// 修复后的图标注册方式
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component)
+  // 将图标名称转换为 i-ep-xxx 短横线格式
+  const iconName = `i-ep-${key.replace('IEp', '').toLowerCase()}`
+  app.component(iconName, component)
 }
+
+// 单独注册 More 图标（可选，循环已包含）
+app.component('i-ep-more', ElementPlusIconsVue.More)
 
 app.use(ElementPlus)
 app.use(createPinia())
