@@ -22,26 +22,24 @@
     <!-- 折疊面板 -->
     <el-collapse class="collapse-block" v-model="activeNames">
       <el-collapse-item title="触发条件" name="trigger">
-        <div v-for="(cond, idx) in alarm.triggers" :key="idx" class="collapse-row">
-          <span class="label">条件{{ idx + 1 }}</span>
-          <span class="value">{{ cond }}</span>
+        <div class="collapse-row">
+          <span class="value">{{ alarm.triggers }}</span>
         </div>
       </el-collapse-item>
       <el-collapse-item title="通知方式" name="notify">
-        <div v-for="(notify, idx) in alarm.notifies" :key="idx" class="collapse-row">
-          <span class="label">通知{{ idx + 1 }}</span>
-          <span class="value">{{ notify }}</span>
+        <div class="collapse-row">
+          <span class="value">{{ alarm.notifies }}</span>
         </div>
       </el-collapse-item>
       <el-collapse-item title="静默时间" name="silence">
         <div class="collapse-row">
-          <span class="label">时间</span>
           <span class="value">{{ alarm.silence }}</span>
         </div>
       </el-collapse-item>
     </el-collapse>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue'

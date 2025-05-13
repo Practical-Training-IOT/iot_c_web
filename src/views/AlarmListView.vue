@@ -17,13 +17,13 @@
     <el-input v-model="search" placeholder="请输入搜索" class="search-bar" clearable prefix-icon="el-icon-search" />
 
     <!-- 告警卡片列表 -->
-    <div class="alarm-list" @click="gotoDetail(alarm.id)">
+    <div class="alarm-list">
       <AlarmCardComponent
-        v-for="alarm in filteredAlarms"
-        :key="alarm.id"
-        :alarm="alarm"
-        @toggle="onToggle(alarm, $event)"
-        @click="onAlarmClick(alarm)"
+          v-for="alarm in filteredAlarms"
+          :key="alarm.id"
+          :alarm="alarm"
+          @toggle="onToggle(alarm, $event)"
+          @click="gotoDetail(alarm.id)"
       />
     </div>
 
@@ -38,6 +38,7 @@ import { useRouter } from 'vue-router'
 import AlarmCardComponent from '@/components/AlarmCardComponent.vue'
 import BottomNavComponent from '@/components/BottomNavComponent.vue'
 import * as Icons from '@element-plus/icons-vue'
+import {ElMessage} from "element-plus";
 // eslint-disable-next-line no-undef
 defineProps({
   alarm: Object
@@ -89,23 +90,52 @@ onMounted(() => {
   fetchAlarms(); // 在组件挂载时调用fetchAlarms方法
 })
 
-const onToggle = (alarm, val) => {
-  alarm.enabled = val
-  // TODO: 调用接口更新状态
-}
+const onToggle = async (alarm, newValue) => {
+  try {
+    // 立即更新本地状态
+    alarm.enabled = newValue;
 
-const onAlarmClick = (alarm) => {
-  router.push(`/alarm/${alarm.id}`)
-}
+    // 调用API更新
+    const response = await fetch(`http://localhost:8888/api/alarmUpdate?id=${alarm.id}&enabled=${newValue}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!response.ok) {
+      // 如果API调用失败，回滚状态
+      alarm.enabled = !newValue;
+      throw new Error('更新失败');
+    }
+
+    // 可选的：重新获取数据确保同步
+    await fetchAlarms();
+
+  } catch (error) {
+    console.error('更新状态失败:', error);
+    ElMessage.error('更新状态失败，请重试');
+  }
+};
 
 // 过滤告警规则
 const filteredAlarms = computed(() => {
-  let list = alarms.value
-  if (tab.value === 'enabled') list = list.filter(a => a.enabled)
-  if (tab.value === 'disabled') list = list.filter(a => !a.enabled)
-  if (search.value) list = list.filter(a => a.title.includes(search.value))
-  return list
-})
+  let list = alarms.value;
+
+  // 根据 tab 过滤
+  if (tab.value === 'enabled') {
+    list = list.filter(a => a.enabled === true);  // 只显示已启动
+  } else if (tab.value === 'disabled') {
+    list = list.filter(a => a.enabled === false); // 只显示已停止
+  }
+
+  // 搜索过滤
+  if (search.value) {
+    list = list.filter(a =>
+        a.title.toLowerCase().includes(search.value.toLowerCase())
+    );
+  }
+
+  return list;
+});
 </script>
 <style lang="scss" scoped>
 .alarm-list-view {
